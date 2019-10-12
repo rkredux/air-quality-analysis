@@ -14,8 +14,8 @@ awk -F, '{ a[$2] } END { for (i in a) print i}' airquality.csv >> list_of_countr
 awk -F, '$2== "US" { a[$1] } END { for (i in a) print i}' airquality.csv >> list_of_cities.txt
 
 
-#Top 10 US Stations With Highest Levels of CO
-time awk -F, ' $2 == "US" && $7 == "co"{ print $0}' OFS=, airquality.csv | parallel --pipe --block 10M sort -k8 -n -r | head -10
+#Top 20 readings for a particular parameter 
+time awk -F, '$7 == "co" { print $1,$2,$5,$7,$8}' OFS=, airquality.csv | parallel --pipe --block 10M  sort -t ',' -k5 -n -r | head -20 >> top20_co_reading.txt
 
 
 #running calculations 
@@ -30,7 +30,7 @@ time awk -F, '$2 == "US" && $5 ~ "2018-01" && $7 == "co"{ $5=substr($5,1,10); pr
 #e.g.
 #US,2018-01,co,0.44
 #US,2018-02,co,0.42
-awk -F, '$2 == "US" && $5 ~ "2018" && $7 == "co"{ $5=substr($5,1,7); print $2,$5,$7,$8}' OFS=, airquality.csv | awk -F, '{a[$2] += $4} END {for (i in a)print i,a[i]/NR}' | sort -k2 -r -n
+awk -F, '$2 == "US" && $5 ~ "2018" && $7 == "co"{ $5=substr($5,1,7); print $2,$5,$7,$8}' OFS=, airquality.csv | awk -F, '{a[$2] += $4} END {for (i in a)print i,a[i]/NR}' 
 
 
 #sources to read more on subject 
